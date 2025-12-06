@@ -10,7 +10,7 @@ class Product:
         self.hajmi=hajmi
 p=Product("banan",10,100)
 p1=Product("olma",5,100)
-p2=Product("guruch",20,100)
+p2=Product("guruch",2,10)
 class User:
     def __init__(self,username,balance,password):
         self.username=username
@@ -41,8 +41,10 @@ class Shop:
         self.savat = []
         self.usercheck=[]
     def user_check(self,u:User):
+        found=False
         for item in self.savat:
             if item.usersavat==u.username:
+                found=True
                 checkname=u.username
                 proname=item.name
                 allsom=item.all_price
@@ -50,11 +52,10 @@ class Shop:
                 date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 ch=Check(checkname,proname,allsom,allkg,date)
                 self.usercheck.append(ch)
-                print("check saqlandi")
-                break
+        if found:
+            print("check saqlandi")
         else:
             print("xato")
-            return
     def view_check(self):
         count=0
         for i in self.usercheck:
@@ -81,6 +82,10 @@ class Shop:
         name=input("namepoduct")
         price=int(input("narxi"))
         hajmi=int(input("omorda_hajmi"))
+        for i in self.products:
+            if i.name == name:
+                print("bor")
+                return
         if hajmi>0:
             p=Product(name,price,hajmi)
             self.products.append(p)
@@ -148,6 +153,10 @@ class Shop:
         username=input("username")
         balance=float(input("balance"))
         password=int(input("password"))
+        for i in self.users:
+            if i.username == username:
+                print("Bu username band ")
+                return
         u=User(username,balance,password)
         self.users.append(u)
     def add_balance(self,u:User):
@@ -156,6 +165,9 @@ class Shop:
             if username==i.username:
                 yangi=i
                 add_balance=int(input("balance_add"))
+                if add_balance <= 0:
+                    print("xato")
+                    return
                 yangi.balance=i.balance+add_balance
                 break
         else:
@@ -224,14 +236,15 @@ class Shop:
             return
     def view_savat(self, u:User):
         count=0
+        found=False
         userismi=u.username
         for i in self.savat:
             if userismi==i.usersavat:
+                found=True
                 count+=1
                 print(f"{count} name:{i.name} all_price:{i.all_price} hajmi:{i.hajmi} price:{i.price}")
-        else:
+        if not found:
             print("topilmadi")
-            return
     def shopping(self, u: User):
         userismi = u.username
         shop_price = 0
@@ -333,5 +346,5 @@ def menejer_shop(sh:Shop):
                 print("xato1")
         elif kod=="2":
             sh.add_user()
-menejer_shop(shop)
+# menejer_shop(shop)
 
