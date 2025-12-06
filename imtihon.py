@@ -1,4 +1,6 @@
 from itertools import count
+from datetime import datetime
+from tabnanny import check
 
 
 class Product:
@@ -23,6 +25,13 @@ class Savat:
         self.hajmi=hajmi
         self.price=price
         self.usersavat=None
+class Check:
+    def __init__(self,checkname,proname,allsom,allkg,date):
+        self.checkname=checkname
+        self.proname=proname
+        self.allsom=allsom
+        self.allkg=allkg
+        self.date=date
 class Shop:
     def __init__(self,shopname):
         self.shopname=shopname
@@ -30,17 +39,44 @@ class Shop:
         self.products=[]
         self.users=[]
         self.savat = []
+        self.usercheck=[]
+    def user_check(self,u:User):
+        for item in self.savat:
+            if item.usersavat==u.username:
+                checkname=u.username
+                proname=item.name
+                allsom=item.all_price
+                allkg=item.hajmi
+                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                ch=Check(checkname,proname,allsom,allkg,date)
+                self.usercheck.append(ch)
+                print("check saqlandi")
+                break
+        else:
+            print("xato")
+            return
+    def view_check(self):
+        count=0
+        for i in self.usercheck:
+            count+=1
+            print(f"{count}   check\n checkname:{i.checkname}\n proname:{i.proname}\n allson:{i.allsom}\n allkg:{i.allkg}\n date:{i.date}")
+    def name_check(self):
+        count=0
+        name=input("checkname:")
+        for i in self.usercheck:
+            if i.checkname==name:
+                count+=1
+                print(f"{count}  check\n checkname:{i.checkname}\n proname:{i.proname}\n allson:{i.allsom}\n allkg:{i.allkg}\n date:{i.date}")
+    def u_check(self,u:User):
+        count=0
+        for i in self.usercheck:
+            if i.checkname==u.username:
+                count+=1
+                print(f"{count}  check\n checkname:{i.checkname}\n proname:{i.proname}\n allson:{i.allsom}\n allkg:{i.allkg}\n date:{i.date}")
     def shop_balance(self):
         print(f"shop_balance:{self.shopbalance}")
-    def user_balance(self):
-        username=u.username
-        t=False
-        for i in self.users:
-            if username==i.username:
-                print(f"user_balance:{i.balance}")
-                t=True
-        if not t:
-            print('topilmadi')
+    def user_balance(self,u:User):
+        print(f"user_balance: {u.balance}")
     def add_product(self):
         name=input("namepoduct")
         price=int(input("narxi"))
@@ -53,58 +89,61 @@ class Shop:
     def delete_product(self):
         name=input("delete_name")
         count=0
-        t=False
         for i in self.products:
             count+=1
             if name==i.name:
-                t=True
                 x=count
                 self.products.pop(x-1)
                 print("o'chdi")
                 break
-        if not t:
+        else:
             print("topilmadi")
+            return
     def edit_product(self):
         name=input("edit_name")
-        t=False
         for i in self.products:
             if name==i.name:
                 yangi=i
-                t=True
-        if t:
-            kod=input(" 1.name\n 2.price\n 3.hajmi\n 4.all")
-            if kod=="1":
-                new_name=input("new_namae")
-                yangi.name=new_name
-                print("o'zgardi")
-            elif kod=="2":
-                new_price=int(input("new_price"))
-                yangi.price=new_price
-                print("o'zgardi")
-            elif kod=="3":
-                new_hajmi=int(input("new_hajmi"))
-                if new_hajmi>0:
-                    yangi.hajmi=new_hajmi
-                    print("o'zgardi")
-            elif kod=="4":
-                new_name = input("new_namae")
-                new_price = int(input("new_price"))
-                new_hajmi = int(input("new_hajmi"))
-                if new_hajmi>0:
-                    yangi.name = new_name
-                    yangi.price = new_price
-                    yangi.hajmi = new_hajmi
-                    print("all_o'zgardi")
-            else:
-                print("xato")
+                break
         else:
             print("topilmadi")
-
+            return
+        kod=input(" 1.name\n 2.price\n 3.hajmi\n 4.all")
+        if kod=="1":
+            new_name=input("new_namae")
+            yangi.name=new_name
+            print("o'zgardi")
+        elif kod=="2":
+            new_price=int(input("new_price"))
+            yangi.price=new_price
+            print("o'zgardi")
+        elif kod=="3":
+            new_hajmi=int(input("new_hajmi"))
+            if new_hajmi>0:
+                yangi.hajmi=new_hajmi
+                print("o'zgardi")
+            else:
+                print("hajmi xato")
+        elif kod=="4":
+            new_name = input("new_namae")
+            new_price = int(input("new_price"))
+            new_hajmi = int(input("new_hajmi"))
+            if new_hajmi>0:
+                yangi.name = new_name
+                yangi.price = new_price
+                yangi.hajmi = new_hajmi
+                print("all_o'zgardi")
+            else:
+                print("hajmi xato")
+        else:
+            print("xato")
+            return
     def view_product(self):
         count=0
         for i in self.products:
-            count+=1
-            print(f"{count} name:{i.name} price:{i.price} hajmi:{i.hajmi}")
+            if i.hajmi>0:
+                count+=1
+                print(f"{count} name:{i.name} price:{i.price} hajmi:{i.hajmi}")
     def add_user(self):
         username=input("username")
         balance=float(input("balance"))
@@ -113,54 +152,52 @@ class Shop:
         self.users.append(u)
     def add_balance(self,u:User):
         username=u.username
-        t=False
         for i in self.users:
             if username==i.username:
-                t=True
                 yangi=i
                 add_balance=int(input("balance_add"))
                 yangi.balance=i.balance+add_balance
-        if not t:
+                break
+        else:
             print("topilmadi")
+            return
     def view_user(self):
         count=0
         for i in self.users:
             count+=1
             print(f"{count} username:{i.username} balance:{i.balance} password:{i.password}")
-
     def add_savat(self,u:User):
-        count = 0
-        for i in self.products:
-            count += 1
-            print(f"{count} name:{i.name} price:{i.price} hajmi:{i.hajmi}")
-        t=False
-        userismi=u.username
-        for i in self.users:
-            if userismi==i.username:
-                usersavat=i.username
-                name=input('name')
-                for j in self.products:
-                    if name==j.name:
-                        t=True
-                        hajmi=int(input("hajmi kg"))
-                        if hajmi>0:
-                            all_price=hajmi*j.price
-                            price=j.price
-                            sh=Savat(name,all_price,hajmi,price)
-                            sh.usersavat=usersavat
-                            self.savat.append(sh)
-                        else:
-                            print("hajmi_xato")
-                        break
-        if not t :
+        self.view_product()
+        name = input('name')
+        for p in self.products:
+            if p.name == name and p.hajmi>0:
+                product = p
+                break
+        else:
             print("topilmadi")
+            return
+        hajmi = int(input("kg: "))
+        if hajmi <= 0:
+            print("0 bo‘la olmaydi")
+            return
+        if hajmi > product.hajmi:
+            print(f"Omborda {product.hajmi} kg bor!")
+            return
+        for item in self.savat:
+            if item.usersavat == u.username and item.name == name:
+                item.hajmi += hajmi
+                item.all_price = item.hajmi * item.price
+                print("Savat yangilandi!")
+                return
+        new_sav = Savat(name, product.price * hajmi, hajmi, product.price)
+        new_sav.usersavat = u.username
+        self.savat.append(new_sav)
+        print("Savatga qo‘shildi!")
     def edit_Savat(self,u:User):
         name=input("nameproduct")
         userisim=u.username
-        t=False
         for i in self.savat:
             if name==i.name and userisim==i.usersavat:
-                t=True
                 yangi=i
                 new_hajmi=int(input("new_hajmi"))
                 if new_hajmi>0:
@@ -169,39 +206,42 @@ class Shop:
                     print("o'zgardi")
                 else:
                     print("hajmi xato")
-        if not t:
+                    break
+        else:
             print("topilmadi")
+            return
     def delete_savat(self,u:User):
         name=input("nameproduct")
         count=0
-        t=False
         userismi=u.username
         for i in self.savat:
             count+=1
             if name==i.name and userismi==i.usersavat:
                 self.savat.pop(count-1)
-                t=True
-        if not t:
+                break
+        else:
             print('topilmadi')
+            return
     def view_savat(self, u:User):
         count=0
-        t=False
         userismi=u.username
         for i in self.savat:
             if userismi==i.usersavat:
                 count+=1
                 print(f"{count} name:{i.name} all_price:{i.all_price} hajmi:{i.hajmi} price:{i.price}")
-                t=True
-        if not t:
+        else:
             print("topilmadi")
+            return
     def shopping(self, u: User):
         userismi = u.username
         shop_price = 0
-
+        user_items = [i for i in self.savat if i.usersavat == userismi]
+        if not user_items:
+            print("savat bo'sh")
+            return
         for i in self.savat:
             if userismi == i.usersavat:
                 shop_price += i.all_price
-
         if u.balance < shop_price:
             print("Mablag' yetarli emas")
             return
@@ -217,7 +257,7 @@ class Shop:
 
         u.balance -= shop_price
         self.shopbalance += shop_price
-
+        self.user_check(u)
         self.savat = [i for i in self.savat if i.usersavat != userismi]
         print("Xarid amalga oshdi!")
     def login(self):
@@ -241,7 +281,7 @@ shop.users.append(admin)
 shop.users.append(u)
 def admin_menejer(sh:Shop,u:User):
     while True:
-        kod =input(" 1.add_product\n 2.delete_product\n 3.edit_product\n 4.view_product\n 5.view_user\n 6.shop_balance\n 7.break")
+        kod =input(" 1.add_product\n 2.delete_product\n 3.edit_product\n 4.view_product\n 5.view_user\n 6.shop_balance\n 7.view_chek\n 8.name_check\n 9.break")
         if kod=="1":
             sh.add_product()
         elif kod=="2":
@@ -254,11 +294,15 @@ def admin_menejer(sh:Shop,u:User):
             sh.view_user()
         elif kod=="6":
             sh.shop_balance()
+        elif kod=="7":
+            sh.view_check()
+        elif kod=="8":
+            sh.name_check()
         else:
             break
 def user_menejer(sh:Shop,u:User):
     while True:
-        kod=input(" 1.shoping\n 2.add_balance\n 3.add_savat\n 4.edit_savat\n 5.view_savat\n 6.user_balance\n 7.break")
+        kod=input(" 1.shoping\n 2.add_balance\n 3.add_savat\n 4.edit_savat\n 5.view_savat\n 6.user_balance\n 7.u_check\n 8.break")
         if kod=='1':
             sh.shopping(u)
         elif kod=='2':
@@ -270,7 +314,9 @@ def user_menejer(sh:Shop,u:User):
         elif kod=='5':
             sh.view_savat(u)
         elif kod=="6":
-            sh.user_balance()
+            sh.user_balance(u)
+        elif kod=="7":
+            sh.u_check(u)
         else:
             break
 def menejer_shop(sh:Shop):
