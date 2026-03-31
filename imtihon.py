@@ -245,7 +245,7 @@ class Shop:
                 print(f"{count} name:{i.name} all_price:{i.all_price} hajmi:{i.hajmi} price:{i.price}")
         if not found:
             print("topilmadi")
-    def shopping(self, u: User):
+    def shopping(self, u:User):
         userismi = u.username
         shop_price = 0
         user_items = [i for i in self.savat if i.usersavat == userismi]
@@ -267,7 +267,6 @@ class Shop:
                         else:
                             print("omborda yetmaydi")
                             return
-
         u.balance -= shop_price
         self.shopbalance += shop_price
         self.user_check(u)
@@ -348,3 +347,9 @@ def menejer_shop(sh:Shop):
             sh.add_user()
 # menejer_shop(shop)
 
+
+list1=[1,2]
+list2=[1,2]
+list3=list1
+
+print(f"{id(list1)}, \n {id(list2)}, \n {id(list3)}")
